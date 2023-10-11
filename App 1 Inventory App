@@ -1,0 +1,105 @@
+class Product:
+    def __init__(self, id, name, quantity):
+        self.id = id
+        self.name = name
+        self.quantity = quantity
+
+class Inventory:
+    def __init__(self):
+        self.products = []
+
+    def add_product(self, product):
+        self.products.append(product)
+
+    def display_products(self):
+        for product in self.products:
+            print(f'ID: {product.id}, Name: {product.name}, Quantity: {product.quantity}')
+
+# Create inventory
+inventory = Inventory()
+
+# Add products
+inventory.add_product(Product(1, 'Apple', 50))
+inventory.add_product(Product(2, 'Banana', 100))
+
+# Display products
+inventory.display_products()
+import sqlite3
+
+class Inventory:
+    def __init__(self, db_name):
+        self.conn = sqlite3.connect(db_name)
+        self.cursor = self.conn.cursor()
+        self.cursor.execute('''
+            CREATE TABLE IF NOT EXISTS products (
+                id INTEGER PRIMARY KEY,
+                name TEXT,
+                quantity INTEGER
+            )
+        ''')
+
+    def add_product(self, product):
+        self.cursor.execute('''
+            INSERT INTO products (id, name, quantity) VALUES (?, ?, ?)
+        ''', (product.id, product.name, product.quantity))
+        self.conn.commit()
+
+    def display_products(self):
+        self.cursor.execute('SELECT * FROM products')
+        for row in self.cursor.fetchall():
+            print(f'ID: {row[0]}, Name: {row[1]}, Quantity: {row[2]}')
+
+# Create inventory
+inventory = Inventory('inventory.db')
+
+# Add products
+inventory.add_product(Product(1, 'Apple', 50))
+inventory.add_product(Product(2, 'Banana', 100))
+
+# Display products
+inventory.display_products()
+import cv2
+from pyzbar.pyzbar import decode
+import csv
+
+class Product:
+    def __init__(self, id, name, quantity):
+        self.id = id
+        self.name = name
+        self.quantity = quantity
+
+class Inventory:
+    def __init__(self):
+        self.products = []
+
+    def add_product(self, product):
+        self.products.append(product)
+
+    def display_products(self):
+        for product in self.products:
+            print(f'ID: {product.id}, Name: {product.name}, Quantity: {product.quantity}')
+
+    def save_to_csv(self, filename):
+        with open(filename, 'w', newline='') as f:
+            writer = csv.writer(f)
+            writer.writerow(['ID', 'Name', 'Quantity'])
+            for product in self.products:
+                writer.writerow([product.id, product.name, product.quantity])
+
+def scan_barcode(image_path):
+    img = cv2.imread(image_path)
+    for barcode in decode(img):
+        barcode_data = barcode.data.decode('utf-8')
+        print(f'Decoded data: {barcode_data}')
+        return barcode_data
+
+# Create inventory
+inventory = Inventory()
+
+# Scan barcodes and add products to inventory
+barcode_data = scan_barcode('path_to_your_image')
+inventory.add_product(Product(barcode_data, 'Product Name', 50))
+
+# Save inventory to CSV
+inventory.save_to_csv('inventory.csv')
+
