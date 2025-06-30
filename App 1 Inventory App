@@ -1,105 +1,240 @@
-class Product:
-    def __init__(self, id, name, quantity):
-        self.id = id
-        self.name = name
-        self.quantity = quantity
+"""
+Inventory Mobile App (Kivy)
+Autor: ChatGPT
 
-class Inventory:
-    def __init__(self):
-        self.products = []
+Descriere:
+    • Gestionare stoc cu salvare în SQLite
+    • Interfață tactilă prietenoasă (Kivy) — gata de rulat pe desktop & mobil
+    • Scanare cod‑bare din imagine (pentru test rapid) + completarea automată a câmpului ID
+    • Date fictive pre‑populate pentru verificare rapidă
 
-    def add_product(self, product):
-        self.products.append(product)
+Cum rulezi în Visual Studio (Windows):
+    1. Instalează Python 3.10+ și extensia „Python” din Visual Studio 2022.
+    2. Creează un proiect „Python Application”. Pune acest fișier drept *main.py* în folderul proiectului.
+    3. Deschide *Python Environments* → „pip install kivy[base] kivy[angle_sdl2] plyer opencv-python pyzbar".
+    4. Apasă **F5**. Ar trebui să vezi ecranul cu lista de produse.
 
-    def display_products(self):
-        for product in self.products:
-            print(f'ID: {product.id}, Name: {product.name}, Quantity: {product.quantity}')
+Pe Android (opțional):
+    • Instalează *buildozer* pe Linux/WSL și rulează `buildozer -v android debug`.
 
-# Create inventory
-inventory = Inventory()
+"""
 
-# Add products
-inventory.add_product(Product(1, 'Apple', 50))
-inventory.add_product(Product(2, 'Banana', 100))
-
-# Display products
-inventory.display_products()
+import os
 import sqlite3
+from pathlib import Path
 
-class Inventory:
-    def __init__(self, db_name):
-        self.conn = sqlite3.connect(db_name)
-        self.cursor = self.conn.cursor()
-        self.cursor.execute('''
+# ------ BAZA DE DATE ---------------------------------------------------------
+DB_PATH = Path(__file__).with_name("inventory.db")
+
+class InventoryDB:
+    """Wrapper simplu peste SQLite — un singur tabel «products»"""
+
+    def __init__(self, db_path=DB_PATH):
+        self.conn = sqlite3.connect(db_path, check_same_thread=False)
+        self.cur = self.conn.cursor()
+        self.cur.execute(
+            """
             CREATE TABLE IF NOT EXISTS products (
-                id INTEGER PRIMARY KEY,
-                name TEXT,
-                quantity INTEGER
+                id TEXT PRIMARY KEY,
+                name TEXT NOT NULL,
+                quantity INTEGER NOT NULL
             )
-        ''')
-
-    def add_product(self, product):
-        self.cursor.execute('''
-            INSERT INTO products (id, name, quantity) VALUES (?, ?, ?)
-        ''', (product.id, product.name, product.quantity))
+            """
+        )
         self.conn.commit()
 
-    def display_products(self):
-        self.cursor.execute('SELECT * FROM products')
-        for row in self.cursor.fetchall():
-            print(f'ID: {row[0]}, Name: {row[1]}, Quantity: {row[2]}')
+    # ---------------- CRUD ----------------
+    def add_product(self, pid: str, name: str, qty: int):
+        self.cur.execute(
+            """
+            INSERT OR REPLACE INTO products(id, name, quantity)
+            VALUES (?,?,?)
+            """,
+            (pid, name, qty),
+        )
+        self.conn.commit()
 
-# Create inventory
-inventory = Inventory('inventory.db')
+    def get_all(self):
+        self.cur.execute("SELECT id, name, quantity FROM products ORDER BY id")
+        return self.cur.fetchall()
 
-# Add products
-inventory.add_product(Product(1, 'Apple', 50))
-inventory.add_product(Product(2, 'Banana', 100))
+    # --------------------------------------
 
-# Display products
-inventory.display_products()
-import cv2
-from pyzbar.pyzbar import decode
-import csv
 
-class Product:
-    def __init__(self, id, name, quantity):
-        self.id = id
-        self.name = name
-        self.quantity = quantity
+db = InventoryDB()
 
-class Inventory:
-    def __init__(self):
-        self.products = []
+# ------ ÎNCĂRCARE DATE DEMO --------------------------------------------------
 
-    def add_product(self, product):
-        self.products.append(product)
+def _seed():
+    if not db.get_all():
+        sample = [
+            ("111111", "Mere Golden", 40),
+            ("222222", "Banană Ecuador", 120),
+            ("333333", "Lapte Bio 1 L", 30),
+            ("444444", "Pâine Integrală", 25),
+        ]
+        for row in sample:
+            db.add_product(*row)
 
-    def display_products(self):
-        for product in self.products:
-            print(f'ID: {product.id}, Name: {product.name}, Quantity: {product.quantity}')
+_seed()
 
-    def save_to_csv(self, filename):
-        with open(filename, 'w', newline='') as f:
-            writer = csv.writer(f)
-            writer.writerow(['ID', 'Name', 'Quantity'])
-            for product in self.products:
-                writer.writerow([product.id, product.name, product.quantity])
+# ------ INTERFAȚĂ GRAFICĂ (KIVY) --------------------------------------------
+from kivy.app import App
+from kivy.lang import Builder
+from kivy.uix.boxlayout import BoxLayout
+from kivy.properties import StringProperty, NumericProperty
+from kivy.metrics import dp
 
-def scan_barcode(image_path):
-    img = cv2.imread(image_path)
-    for barcode in decode(img):
-        barcode_data = barcode.data.decode('utf-8')
-        print(f'Decoded data: {barcode_data}')
-        return barcode_data
+try:
+    from plyer import filechooser  # only desktop; on Android se folosește camera
+except ImportError:
+    filechooser = None
 
-# Create inventory
-inventory = Inventory()
+try:
+    import cv2
+    from pyzbar.pyzbar import decode
+except ImportError:
+    cv2 = None
+    decode = lambda *a, **kw: []
 
-# Scan barcodes and add products to inventory
-barcode_data = scan_barcode('path_to_your_image')
-inventory.add_product(Product(barcode_data, 'Product Name', 50))
+KV = f"""
+#:import dp kivy.metrics.dp
 
-# Save inventory to CSV
-inventory.save_to_csv('inventory.csv')
+<InventoryRow@BoxLayout>:
+    id_text: ''
+    name_text: ''
+    qty_text: ''
+    size_hint_y: None
+    height: dp(34)
+    spacing: dp(4)
+    canvas.before:
+        Color: 1,1,1,0.03
+        Rectangle: pos: self.pos; size: self.size
+    Label:
+        text: root.id_text
+        size_hint_x: 0.3
+    Label:
+        text: root.name_text
+        halign: 'left'
+        size_hint_x: 0.5
+        text_size: self.width, None
+    Label:
+        text: root.qty_text
+        size_hint_x: 0.2
+
+<Root>:
+    orientation: 'vertical'
+    padding: dp(8)
+    spacing: dp(6)
+
+    # --- Formular adăugare --------------------------------------------------
+    BoxLayout:
+        size_hint_y: None
+        height: dp(40)
+        spacing: dp(4)
+        TextInput:
+            id: pid
+            hint_text: 'ID (scan/manual)'
+            multiline: False
+        TextInput:
+            id: pname
+            hint_text: 'Denumire produs'
+            multiline: False
+        TextInput:
+            id: pqty
+            hint_text: 'Cantitate'
+            multiline: False
+            input_filter: 'int'
+            size_hint_x: 0.3
+        Button:
+            text: 'Adaugă'
+            on_release: root.add_product(pid.text, pname.text, pqty.text)
+        Button:
+            text: 'Scanează'
+            on_release: root.scan_barcode()
+
+    # --- Lista stoc --------------------------------------------------------
+    RecycleView:
+        id: rv
+        viewclass: 'InventoryRow'
+        RecycleBoxLayout:
+            default_size: None, dp(34)
+            default_size_hint: 1, None
+            size_hint_y: None
+            height: self.minimum_height
+            orientation: 'vertical'
+"""
+
+
+class Root(BoxLayout):
+    """Widget principal — include formularul + lista"""
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.refresh()
+
+    # ---------------------------------------------------------------------
+    def refresh(self):
+        self.ids.rv.data = [
+            {
+                "id_text": str(pid),
+                "name_text": name,
+                "qty_text": str(qty),
+            }
+            for pid, name, qty in db.get_all()
+        ]
+
+    # ---------------------------------------------------------------------
+    def add_product(self, pid: str, name: str, qty: str):
+        if not (pid and name and qty.isdigit()):
+            return  # aici ai putea afişa un popup de eroare
+        db.add_product(pid.strip(), name.strip(), int(qty))
+        # curăţă câmpurile
+        self.ids.pid.text = self.ids.pname.text = self.ids.pqty.text = ""
+        self.refresh()
+
+    # ---------------------------------------------------------------------
+    def scan_barcode(self):
+        if filechooser is None or cv2 is None:
+            return
+        paths = filechooser.open_file(title="Selectează imagine cu cod‑bare…")
+        if not paths:
+            return
+        code = self._decode(paths[0])
+        if code:
+            self.ids.pid.text = code
+
+    @staticmethod
+    def _decode(img_path: str) -> str:
+        img = cv2.imread(img_path)
+        for bc in decode(img):
+            return bc.data.decode("utf-8")
+        return ""
+
+
+class InventoryApp(App):
+    title = "Inventar Stoc — Demo"
+
+    def build(self):
+        Builder.load_string(KV)
+        return Root()
+
+
+# ---------------- TEST RAPID ------------------------------------------------
+if __name__ == "__main__":
+    import sys, unittest
+
+    if "--test" in sys.argv:
+
+        class TestDB(unittest.TestCase):
+            def test_add_and_fetch(self):
+                db.add_product("999999", "Produs Test", 5)
+                self.assertIn(
+                    ("999999", "Produs Test", 5), db.get_all(), "Produsul de test nu s‑a înscris corect!"
+                )
+
+        unittest.main(argv=[sys.argv[0]])
+    else:
+        InventoryApp().run()
+
 
