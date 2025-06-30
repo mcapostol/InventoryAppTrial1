@@ -1,33 +1,40 @@
 """
 Inventory Mobile App (Kivy)
-Autor: ChatGPT
+Autor: Cristian Apostol
 
 Descriere:
-    • Gestionare stoc cu salvare în SQLite
-    • Interfață tactilă prietenoasă (Kivy) — gata de rulat pe desktop & mobil
-    • Scanare cod‑bare din imagine (pentru test rapid) + completarea automată a câmpului ID
-    • Date fictive pre‑populate pentru verificare rapidă
+    • Gestionare stoc cu SQLite
+    • Interfață tactilă prietenoasă (Kivy) — desktop & mobil
+    • Scanare cod‑bare + completare automată ID
+    • Date demo pre‑populate
 
-Cum rulezi în Visual Studio (Windows):
-    1. Instalează Python 3.10+ și extensia „Python” din Visual Studio 2022.
+*Update 2025‑06‑30*: tratat eroarea `NameError: __file__ is not defined` (apare când rulezi dintr‑un REPL, Jupyter sau anumite configurări VS) prin fallback către `Path.cwd()`.
+
+Cum rulezi în Visual Studio (Windows):
+    1. Instalează Python 3.10+ și extensia „Python”.
     2. Creează un proiect „Python Application”. Pune acest fișier drept *main.py* în folderul proiectului.
     3. Deschide *Python Environments* → „pip install kivy[base] kivy[angle_sdl2] plyer opencv-python pyzbar".
-    4. Apasă **F5**. Ar trebui să vezi ecranul cu lista de produse.
+    4. Rulează (F5) sau `python main.py` din linia de comandă.
 
 Pe Android (opțional):
-    • Instalează *buildozer* pe Linux/WSL și rulează `buildozer -v android debug`.
-
+    • Instalează *buildozer* (Linux/WSL) și rulează `buildozer -v android debug`.
 """
 
-import os
 import sqlite3
 from pathlib import Path
 
-# ------ BAZA DE DATE ---------------------------------------------------------
-DB_PATH = Path(__file__).with_name("inventory.db")
+# ------------------ BAZA DE DATE -------------------------------------------
+# • Dacă __file__ nu este definit (ex.: Jupyter, unele rulări VS), folosim cwd.
+try:
+    ROOT_DIR = Path(__file__).resolve().parent
+except NameError:
+    ROOT_DIR = Path.cwd()
+
+DB_PATH = ROOT_DIR / "inventory.db"
+
 
 class InventoryDB:
-    """Wrapper simplu peste SQLite — un singur tabel «products»"""
+    """Wrapper simplu peste SQLite — un singur tabel «products»."""
 
     def __init__(self, db_path=DB_PATH):
         self.conn = sqlite3.connect(db_path, check_same_thread=False)
@@ -58,35 +65,32 @@ class InventoryDB:
         self.cur.execute("SELECT id, name, quantity FROM products ORDER BY id")
         return self.cur.fetchall()
 
-    # --------------------------------------
 
+# Instanță globală
+_db = InventoryDB()
 
-db = InventoryDB()
-
-# ------ ÎNCĂRCARE DATE DEMO --------------------------------------------------
+# ---------------- ÎNCĂRCARE DATE DEMO --------------------------------------
 
 def _seed():
-    if not db.get_all():
-        sample = [
+    if not _db.get_all():
+        for row in [
             ("111111", "Mere Golden", 40),
             ("222222", "Banană Ecuador", 120),
             ("333333", "Lapte Bio 1 L", 30),
             ("444444", "Pâine Integrală", 25),
-        ]
-        for row in sample:
-            db.add_product(*row)
+        ]:
+            _db.add_product(*row)
 
 _seed()
 
-# ------ INTERFAȚĂ GRAFICĂ (KIVY) --------------------------------------------
+# ---------------- INTERFAȚĂ GRAFICĂ ----------------------------------------
 from kivy.app import App
 from kivy.lang import Builder
 from kivy.uix.boxlayout import BoxLayout
-from kivy.properties import StringProperty, NumericProperty
 from kivy.metrics import dp
 
 try:
-    from plyer import filechooser  # only desktop; on Android se folosește camera
+    from plyer import filechooser
 except ImportError:
     filechooser = None
 
@@ -97,7 +101,7 @@ except ImportError:
     cv2 = None
     decode = lambda *a, **kw: []
 
-KV = f"""
+KV = r"""
 #:import dp kivy.metrics.dp
 
 <InventoryRow@BoxLayout>:
@@ -108,14 +112,18 @@ KV = f"""
     height: dp(34)
     spacing: dp(4)
     canvas.before:
-        Color: 1,1,1,0.03
-        Rectangle: pos: self.pos; size: self.size
+        Color:
+            rgba: 1, 1, 1, 0.03
+        Rectangle:
+            pos: self.pos
+            size: self.size
     Label:
         text: root.id_text
         size_hint_x: 0.3
     Label:
         text: root.name_text
         halign: 'left'
+        valign: 'middle'
         size_hint_x: 0.5
         text_size: self.width, None
     Label:
@@ -127,7 +135,6 @@ KV = f"""
     padding: dp(8)
     spacing: dp(6)
 
-    # --- Formular adăugare --------------------------------------------------
     BoxLayout:
         size_hint_y: None
         height: dp(40)
@@ -153,7 +160,6 @@ KV = f"""
             text: 'Scanează'
             on_release: root.scan_barcode()
 
-    # --- Lista stoc --------------------------------------------------------
     RecycleView:
         id: rv
         viewclass: 'InventoryRow'
@@ -167,37 +173,31 @@ KV = f"""
 
 
 class Root(BoxLayout):
-    """Widget principal — include formularul + lista"""
-
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.refresh()
 
-    # ---------------------------------------------------------------------
     def refresh(self):
         self.ids.rv.data = [
             {
-                "id_text": str(pid),
-                "name_text": name,
-                "qty_text": str(qty),
+                'id_text': str(pid),
+                'name_text': name,
+                'qty_text': str(qty),
             }
-            for pid, name, qty in db.get_all()
+            for pid, name, qty in _db.get_all()
         ]
 
-    # ---------------------------------------------------------------------
     def add_product(self, pid: str, name: str, qty: str):
         if not (pid and name and qty.isdigit()):
-            return  # aici ai putea afişa un popup de eroare
-        db.add_product(pid.strip(), name.strip(), int(qty))
-        # curăţă câmpurile
-        self.ids.pid.text = self.ids.pname.text = self.ids.pqty.text = ""
+            return
+        _db.add_product(pid.strip(), name.strip(), int(qty))
+        self.ids.pid.text = self.ids.pname.text = self.ids.pqty.text = ''
         self.refresh()
 
-    # ---------------------------------------------------------------------
     def scan_barcode(self):
         if filechooser is None or cv2 is None:
             return
-        paths = filechooser.open_file(title="Selectează imagine cu cod‑bare…")
+        paths = filechooser.open_file(title='Selectează imagine cu cod‑bare…')
         if not paths:
             return
         code = self._decode(paths[0])
@@ -208,33 +208,33 @@ class Root(BoxLayout):
     def _decode(img_path: str) -> str:
         img = cv2.imread(img_path)
         for bc in decode(img):
-            return bc.data.decode("utf-8")
-        return ""
+            return bc.data.decode('utf-8')
+        return ''
 
 
 class InventoryApp(App):
-    title = "Inventar Stoc — Demo"
+    title = 'Inventar Stoc — Demo'
 
     def build(self):
         Builder.load_string(KV)
         return Root()
 
 
-# ---------------- TEST RAPID ------------------------------------------------
-if __name__ == "__main__":
+# ---------------- TEST RAPID ----------------------------------------------
+if __name__ == '__main__':
     import sys, unittest
 
-    if "--test" in sys.argv:
+    if '--test' in sys.argv:
 
         class TestDB(unittest.TestCase):
             def test_add_and_fetch(self):
-                db.add_product("999999", "Produs Test", 5)
+                _db.add_product('999999', 'Produs Test', 5)
                 self.assertIn(
-                    ("999999", "Produs Test", 5), db.get_all(), "Produsul de test nu s‑a înscris corect!"
+                    ('999999', 'Produs Test', 5),
+                    _db.get_all(),
+                    'Produsul de test nu s‑a înscris corect!',
                 )
 
         unittest.main(argv=[sys.argv[0]])
     else:
         InventoryApp().run()
-
-
