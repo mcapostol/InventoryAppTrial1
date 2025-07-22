@@ -40,6 +40,12 @@ cd web && npm ci && npm run dev   # UI on :5173
 ```
 ## Local Docker
 
+
+Pornire locală cu Docker Compose:
+
+```bash
+
+
 Pornire locală cu Docker Compose:
 
 ```bash
