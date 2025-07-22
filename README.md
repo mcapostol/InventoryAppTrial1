@@ -32,8 +32,6 @@ npm run dev                 # API on :4000
 cd web && npm ci && npm run dev   # UI on :5173
 ```
 
-## 🖼 Infrastructure Diagram
-
 
 ## 🖼 Infrastructure Diagram
 
