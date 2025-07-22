@@ -30,3 +30,55 @@ git clone https://github.com/mcapostol/InventoryAppTrial1
 npm ci                      # backend
 npm run dev                 # API on :4000
 cd web && npm ci && npm run dev   # UI on :5173
+
+## 🖼 Infrastructure Diagram
+
+```mermaid
+graph TD
+    subgraph CI/CD
+        devPC[(Developer PC)]
+        gha[GitHub<br>Actions]
+        devPC -->|push| gha
+    end
+
+    subgraph Azure_RG["Azure Resource Group: rg-inventory"]
+        terraform[Terraform State<br>(Storage Account)]
+        aks[(AKS Cluster)]
+        acr[(Azure&nbsp;Container&nbsp;Registry)]
+        log[(Log Analytics)]
+        argo[Argo CD<br>(namespace argocd)]
+    end
+
+    subgraph AKS
+        ingress[NGINX<br>Ingress Controller]
+        inventoryDeploy[Deployment<br>inventory-api]
+        inventoryUI[Deployment<br>inventory-ui]
+        hpa[HPA<br>scale 2‑6]
+    end
+
+    mongo[(MongoDB Atlas<br>Cloud)]
+    
+    %% CI/CD flow
+    gha -->|docker build & push| acr
+    gha -->|helm upgrade --install| argo
+
+    %% GitOps sync
+    argo -->|sync manifests| ingress
+    argo --> inventoryDeploy
+    argo --> inventoryUI
+    argo --> hpa
+
+    %% Runtime traffic
+    ingress --> inventoryUI
+    ingress --> inventoryDeploy
+    inventoryDeploy -->|CRUD REST| mongo
+
+    %% Observability
+    aks -- metrics --> log
+    inventoryDeploy -- logs --> log
+    inventoryUI -- logs --> log
+
+    %% IaC
+    devPC -->|terraform apply| aks
+    devPC -->|terraform apply| acr
+    devPC -->|terraform apply| log
