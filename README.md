@@ -35,64 +35,65 @@ cd web && npm ci && npm run dev   # UI on :5173
 ## 🖼 Infrastructure Diagram
 
 
+## 🖼 Infrastructure Diagram
+
 ```mermaid
-%% Top‑level flow
 graph TD
-    %% -------------------------  CI / CD  -------------------------
+    %% ---------------  CI / CD  ---------------
     subgraph "CI / CD"
-        devPC[(Developer PC)]
-        gha[GitHub<br>Actions<br>(CI + CD)]
+        devPC[(Developer PC)]
+        gha["GitHub<br/>Actions<br/>(CI + CD)"]
         devPC -- "push / PR" --> gha
     end
 
-    %% -----------  Azure Resource Group (rg‑inventory) ------------
-    subgraph Azure_RG["Azure Resource Group: **rg‑inventory**"]
-        terraform[Terraform State<br>(Storage Account)]
-        aks[(AKS Cluster)]
-        acr[(Azure Container Registry)]
-        kv[(Azure Key Vault)]
-        log[(Log Analytics Workspace)]
-        policy[Azure Policy<br>Add‑on for AKS]
-        defender[Defender for Cloud]
-        argo[Argo CD<br>(namespace **argocd**)]
+    %% --------  Resource Group (rg‑inventory) -------
+    subgraph Azure_RG["Azure Resource Group: rg‑inventory"]
+        terraform["Terraform State<br/>(Storage Account)"]
+        aks[(AKS Cluster)]
+        acr["Azure Container Registry"]
+        kv["Azure Key Vault"]
+        log["Log Analytics Workspace"]
+        policy["Azure Policy<br/>Add‑on for AKS"]
+        defender["Defender for Cloud"]
+        argo["Argo CD<br/>(ns argocd)"]
     end
 
-    %% ----------------------  AKS internals  ----------------------
-    subgraph AKS_Internals["AKS Cluster"]
-        ingress[NGINX<br>Ingress Controller]
-        inventoryDeploy[Deployment<br>`inventory-api`]
-        inventoryUI[Deployment<br>`inventory-ui`]
-        hpa[HPA<br>min 2 / max 6]
+    %% --------------  AKS internals  ---------------
+    subgraph AKS_Internal["Inside AKS"]
+        ingress["NGINX<br/>Ingress Controller"]
+        inventoryDeploy["Deployment<br/>inventory-api"]
+        inventoryUI["Deployment<br/>inventory-ui"]
+        hpa["HPA<br/>min 2 / max 6"]
     end
 
-    %% -------------------------  External  ------------------------
-    mongo[(MongoDB Atlas<br>Cloud)]
-    
-    %% ---------------------  CI / CD flow lines  ------------------
+    %% --------------  External DB ------------------
+    mongo["MongoDB Atlas<br/>Cloud"]
+
+    %% CI/CD flow
     gha -- "docker build & push" --> acr
     gha -- "helm upgrade --install" --> argo
 
-    %% -----------------------  GitOps Sync  -----------------------
+    %% GitOps sync
     argo -- "sync manifests" --> ingress
     argo --> inventoryDeploy
     argo --> inventoryUI
     argo --> hpa
 
-    %% ----------------------  Runtime traffic ---------------------
+    %% Runtime traffic
     ingress --> inventoryUI
     ingress --> inventoryDeploy
-    inventoryDeploy -- "CRUD REST" --> mongo
+    inventoryDeploy -- "CRUD REST" --> mongo
 
-    %% ---------------  Secrets & Key Vault access  ----------------
-    kv -- "CSI / Azure AD Pod Identity" --> inventoryDeploy
-    kv -- "CSI / Azure AD Pod Identity" --> inventoryUI
+    %% Secrets
+    kv -- "CSI / AAD Pod Identity" --> inventoryDeploy
+    kv -- "CSI / AAD Pod Identity" --> inventoryUI
 
-    %% ---------------------  Observability  -----------------------
-    aks -- "metrics" --> log
-    inventoryDeploy -- "logs" --> log
-    inventoryUI -- "logs" --> log
+    %% Observability
+    aks -- metrics --> log
+    inventoryDeploy -- logs --> log
+    inventoryUI -- logs --> log
 
-    %% --------------------  IaC workflow  -------------------------
+    %% IaC apply
     devPC -- "terraform apply" --> aks
     devPC --> acr
     devPC --> kv
@@ -100,8 +101,8 @@ graph TD
     devPC --> policy
     devPC --> defender
 
-    %% ---------------  Governance & Security hooks  --------------
-    policy -. "enforce\nCIS & custom\npolicies" .-> aks
-    defender -. "CSPM &\nvuln scans" .-> aks
+    %% Governance
+    policy -. "enforce CIS & custom policies" .-> aks
+    defender -. "CSPM & vuln scans" .-> aks
 ```
 <!--‑‑‑‑ End copy ‑‑‑‑-->
