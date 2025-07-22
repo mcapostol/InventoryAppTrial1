@@ -100,4 +100,4 @@ graph TD
 
     %% ---------------  Governance & Security hooks  --------------
     policy -. "enforce\nCIS & custom\npolicies" .-> aks
-    defender -. "CSPM &\nvuln scans" .-> aks
+    defender -. "CSPM &\nvuln scans" .-> aks```
