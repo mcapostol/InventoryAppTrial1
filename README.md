@@ -1,11 +1,10 @@
 ## 3️⃣ InventoryAppTrial1 (+ Web‑UI)
 
-[![API Health](https://img.shields.io/badge/health-ok-brightgreen?logo=uptime-robot)](http://localhost:4000/health)  
-[![API Docker Build](https://github.com/mcapostol/InventoryAppTrial1/actions/workflows/build-api.yml/badge.svg)](https://github.com/mcapostol/InventoryAppTrial1/actions/workflows/build-api.yml)  
-[![UI Docker Build](https://img.shields.io/badge/UI--Docker--Build-passing-brightgreen?logo=docker)]  
-[![Docker Compose](https://img.shields.io/badge/docker_compose-up-blue?logo=docker)]  
-[![CodeQL](https://github.com/mcapostol/InventoryAppTrial1/actions/workflows/codeql.yml/badge.svg)](https://github.com/mcapostol/InventoryAppTrial1/actions/workflows/codeql.yml)  
-[![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=mcapostol/InventoryAppTrial1)](https://github.com/mcapostol/InventoryAppTrial1/security/dependabot)  
+[![API Health](https://img.shields.io/badge/health-ok-brightgreen?logo=uptime-robot)](http://localhost:4000/health)
+[![API Docker Build](https://github.com/mcapostol/InventoryAppTrial1/actions/workflows/build-api.yml/badge.svg)](https://github.com/mcapostol/InventoryAppTrial1/actions/workflows/build-api.yml)
+[![UI Docker Build](https://img.shields.io/badge/UI--Docker--Build-passing-brightgreen?logo=docker)]()
+[![Docker Compose](https://img.shields.io/badge/docker_compose-up-blue?logo=docker)]()
+
 
 Internal tool for stock tracking across multiple warehouses. Written in Node & Express,  
 plus a lightweight React Admin UI. This repo will evolve into a fully containerised  
@@ -34,9 +33,13 @@ cd InventoryAppTrial1
 npm ci               # backend
 npm run dev          # API on :4000
 cd web && npm ci && npm run dev   # UI on :5173
+```
 
+```bash
 docker compose up --build
+```
 
+```mermaid
 graph TD
     %% CI / CD
     subgraph "CI / CD"
@@ -104,4 +107,5 @@ graph TD
     policy -. "enforce CIS & custom policies" .-> aks
     defender -. "CSPM & vuln scans" .-> aks
 
-::contentReference[oaicite:0]{index=0}
+```
+  
