@@ -1,0 +1,27 @@
+version: "3.9"
+services:
+  mongo:
+    image: mongo:6
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+
+  api:
+    build:
+      context: ./inventory-api
+    image: inventory-api:dev
+    ports:
+      - "4000:4000"
+    environment:
+      - MONGO_URL=mongodb://mongo/inventory
+    depends_on:
+      - mongo
+
+  ui:
+    build:
+      context: ./web
+    image: inventory-ui:dev
+    ports:
+      - "8080:80"
+    depends_on:
+      - api
