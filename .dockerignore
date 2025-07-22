@@ -1,0 +1,5 @@
+inventory-api/node_modules
+inventory-api/.npm
+web/node_modules
+web/dist
+npm-debug.log
