@@ -30,8 +30,10 @@ git clone https://github.com/mcapostol/InventoryAppTrial1
 npm ci                      # backend
 npm run dev                 # API on :4000
 cd web && npm ci && npm run dev   # UI on :5173
+```
 
 ## 🖼 Infrastructure Diagram
+
 
 ```mermaid
 %% Top‑level flow
@@ -100,4 +102,6 @@ graph TD
 
     %% ---------------  Governance & Security hooks  --------------
     policy -. "enforce\nCIS & custom\npolicies" .-> aks
-    defender -. "CSPM &\nvuln scans" .-> aks```
+    defender -. "CSPM &\nvuln scans" .-> aks
+```
+<!--‑‑‑‑ End copy ‑‑‑‑-->
