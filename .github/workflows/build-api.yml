@@ -24,10 +24,12 @@ jobs:
             --file inventory-api/Dockerfile \
             --tag ghcr.io/${{ github.repository_owner }}/inventoryapptrial1:api-latest \
             inventory-api
-            
-       - name: Run integration tests
-+       working-directory: inventory-api
-+       run: npm ci && npm run test:int
+
+      - name: Run integration tests
+        working-directory: inventory-api
+        run: |
+          npm ci
+          npm run test:int
 
       - name: Push API image
         run: |
