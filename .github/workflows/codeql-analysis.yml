@@ -1,13 +1,13 @@
-# File: .github/workflows/codeql-analysis.yml
+# .github/workflows/codeql-analysis.yml
 
 name: "CodeQL Security Scan"
 
-# Only these two permissions are needed:
+# Permisiunile necesare pentru scanare
 permissions:
   contents: read          # allow checkout
   security-events: write  # allow uploading CodeQL alerts
 
-# Run on pushes, PRs to main, and nightly
+# Când se rulează
 on:
   push:
     branches: [ main ]
@@ -35,6 +35,6 @@ jobs:
 
       - name: Perform CodeQL analysis
         uses: github/codeql-action/analyze@v3
-        
+
       - name: Upload CodeQL results
-       uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@v3
