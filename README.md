@@ -4,7 +4,7 @@
 [![UI Docker Build](https://github.com/mcapostol/InventoryAppTrial1/actions/workflows/build-ui.yml/badge.svg)](https://github.com/mcapostol/InventoryAppTrial1/actions/workflows/build-ui.yml)  
 [![Docker Compose](https://img.shields.io/badge/docker--compose-up-blue)]  
 [![CodeQL](https://github.com/mcapostol/InventoryAppTrial1/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/mcapostol/InventoryAppTrial1/actions/workflows/codeql-analysis.yml) 
-[![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=mcapostol/InventoryAppTrial1)](https://github.com/mcapostol/InventoryAppTrial1/security/dependabot)
+[![Dependabot alerts](https://img.shields.io/github/dependabot/alerts/mcapostol/InventoryAppTrial1?label=dependabot)](https://github.com/mcapostol/InventoryAppTrial1/security/dependabot)
 
 Internal tool for stock tracking across multiple warehouses. Written in Node & Express, plus a lightweight React Admin UI. This repo will evolve into a fully containerised micro‑service deployed on **AKS**.  
 
