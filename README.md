@@ -39,7 +39,7 @@ cd web && npm ci && npm run dev   # UI on :5173
 ''' bash
 docker compose up --build
 '''
-
+🖼 Infrastructure Diagram
 ```mermaid
 graph TD
   %% CI / CD
