@@ -19,8 +19,8 @@ micro‑service deployed on **AKS**.
 ## Roadmap 🗺
 - [x] REST API (items, locations, movements)  
 - [x] React UI (table + forms)  
-- [ ] Dockerfile & Compose for local dev  
-- [ ] GitHub Actions → build & push image to ACR  
+- [x] Dockerfile & Compose for local dev  
+- [x] GitHub Actions → build & push image to ACR  
 - [ ] Terraform module (AKS + Mongo DB flex server)  
 - [ ] GitOps (ArgoCD) rollout Dev → Prod  
 - [ ] Prometheus metrics + Grafana dashboard  
