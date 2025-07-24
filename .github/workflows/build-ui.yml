@@ -1,0 +1,29 @@
+name: Build & Push UI Image
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-push-ui:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Log in to GHCR
+        run: echo "${{ secrets.GHCR_PAT }}" \
+          | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Build UI image
+        run: |
+          docker build -f web/Dockerfile \
+            -t ghcr.io/${{ github.repository_owner }}/inventory-app-ui:latest \
+            web
+
+      - name: Push UI image
+        run: |
+          docker push ghcr.io/${{ github.repository_owner }}/inventory-app-ui:latest
