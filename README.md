@@ -1,5 +1,4 @@
 ## 3️⃣ `InventoryAppTrial1` (+ Web‑UI)
-
 [![API Health](https://img.shields.io/badge/health-%7B%22status%22%3A%22ok%22%7D-brightgreen)](http://localhost:4000/health)  
 [![API Docker Build](https://github.com/mcapostol/InventoryAppTrial1/actions/workflows/build-api.yml/badge.svg)](https://github.com/mcapostol/InventoryAppTrial1/actions/workflows/build-api.yml)  
 [![UI Docker Build](https://img.shields.io/docker/build/library/inventory-ui?label=ui%20docker%20build)]  
@@ -7,9 +6,7 @@
 [![CodeQL](https://github.com/mcapostol/InventoryAppTrial1/actions/workflows/codeql.yml/badge.svg)](https://github.com/mcapostol/InventoryAppTrial1/actions/workflows/codeql.yml)  
 [![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=mcapostol/InventoryAppTrial1)](https://github.com/mcapostol/InventoryAppTrial1/security/dependabot)  
 
-Internal tool for stock tracking across multiple warehouses. Written in Node & Express,  
-plus a lightweight React Admin UI. This repo will evolve into a fully containerised  
-micro‑service deployed on **AKS**.
+Internal tool for stock tracking across multiple warehouses. Written in Node & Express, plus a lightweight React Admin UI. This repo will evolve into a fully containerised micro‑service deployed on **AKS**.  
 
 | Section   | Details                                                               |
 |-----------|-----------------------------------------------------------------------|
@@ -28,18 +25,19 @@ micro‑service deployed on **AKS**.
 - [ ] Role‑based access (JWT + Entra ID)  
 
 ## Local dev
-
 ```bash
-git clone https://github.com/mcapostol/InventoryAppTrial1
-cd InventoryAppTrial1
-npm ci               # backend
-npm run dev          # API on :4000
+git clone https://github.com/mcapostol/InventoryAppTrial1  
+cd InventoryAppTrial1  
+npm ci               # backend  
+npm run dev          # API on :4000  
 cd web && npm ci && npm run dev   # UI on :5173
+```
 
-''' bash
+Local Docker
+```bash
 docker compose up --build
-'''
-🖼 Infrastructure Diagram
+```
+
 ```mermaid
 graph TD
   %% CI / CD
