@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "test:int": "jest --config jest.config.js"
+    "test:int": "jest --config jest.config.js --runInBand --forceExit"
   },
   "dependencies": {
     "express": "^5.1.0"
