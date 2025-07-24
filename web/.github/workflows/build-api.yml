@@ -14,27 +14,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Login to Azure
-        uses: azure/login@v1
-        with:
-          creds: |
-            {
-              "clientId": "${{ secrets.AZURE_CLIENT_ID }}",
-              "tenantId": "${{ secrets.AZURE_TENANT_ID }}",
-              "subscriptionId": "${{ secrets.AZURE_SUBSCRIPTION_ID }}",
-              "clientSecret": "${{ secrets.AZURE_CLIENT_SECRET }}"
-            }
+      - name: Log in to GHCR
+        run: echo "${{ secrets.GHCR_PAT }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
-      - name: Login to ACR
-        run: az acr login --name ${{ secrets.ACR_NAME }}
-
-      - name: Build API Docker image
+      - name: Build API image
         run: |
-          docker build \
-            -f inventory-api/Dockerfile \
-            -t ${{ secrets.ACR_NAME }}.azurecr.io/inventory-api:latest \
+          docker build -f inventory-api/Dockerfile \
+            -t ghcr.io/${{ github.repository_owner }}/InventoryAppTrial1:api-latest \
             inventory-api
 
-      - name: Push API Docker image
+      - name: Push API image
         run: |
-          docker push ${{ secrets.ACR_NAME }}.azurecr.io/inventory-api:latest
+          docker push ghcr.io/${{ github.repository_owner }}/InventoryAppTrial1:api-latest
