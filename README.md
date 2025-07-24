@@ -106,3 +106,4 @@ graph TD
   %% Governance
   policy -. "enforce CIS & custom policies" .-> aks
   defender -. "CSPM & vuln scans" .-> aks
+```
