@@ -35,6 +35,7 @@ cd InventoryAppTrial1
 npm ci               # backend
 npm run dev          # API on :4000
 cd web && npm ci && npm run dev   # UI on :5173
+
 ''' bash
 docker compose up --build
 '''
