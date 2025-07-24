@@ -11,11 +11,6 @@
 [![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=mcapostol/InventoryAppTrial1)](https://github.com/mcapostol/InventoryAppTrial1/security/dependabot) 
 
 ```markdown
-<<<<<<< HEAD
-=======
-
->>>>>>> b57db3daa7b8f83e11ba5d387b3db97bc01b6ecd
-
 
 Internal tool for stock tracking across multiple warehouses. Written in Node & Express,  
 plus a lightweight React Admin UI. This repo will evolve into a fully containerised  
@@ -38,6 +33,7 @@ micro‑service deployed on **AKS**.
 - [ ] Role‑based access (JWT + Entra ID)  
 
 ## Local dev
+
 ```bash
 git clone https://github.com/mcapostol/InventoryAppTrial1
 cd InventoryAppTrial1
@@ -52,14 +48,12 @@ Pornire locală cu Docker Compose:
 
 ```bash
 
-<<<<<<< HEAD
-=======
 
 Pornire locală cu Docker Compose:
 
 ```bash
 
->>>>>>> b57db3daa7b8f83e11ba5d387b3db97bc01b6ecd
+
 docker compose up --build
 
 ```
