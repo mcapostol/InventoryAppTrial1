@@ -1,0 +1,37 @@
+name: "CodeQL Security Scan"
+
+on:
+  # Run on pushes to main and on PRs targeting main
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+  # Scheduled once a day
+  schedule:
+    - cron: '0 2 * * *'
+
+jobs:
+  codeql:
+    name: Analyze code for security vulnerabilities
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v2
+        with:
+          # Specify the languages you want to scan
+          languages: javascript
+
+      - name: Build the code
+        run: |
+          cd inventory-api
+          npm ci
+          cd ../web
+          npm ci
+
+      - name: Perform CodeQL analysis
+        uses: github/codeql-action/analyze@v2
