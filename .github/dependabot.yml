@@ -1,0 +1,27 @@
+version: 2
+updates:
+  # 1) npm dependencies in the root and inventory-api and web folders
+  - package-ecosystem: "npm"
+    directory: "/"                 # where package.json is
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "npm"
+    directory: "/inventory-api"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "npm"
+    directory: "/web"
+    schedule:
+      interval: "daily"
+
+  # 2) GitHub Actions workflow updates
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+
+  # 3) Docker base image updates
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
