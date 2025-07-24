@@ -18,7 +18,7 @@ Internal tool for stock tracking across multiple warehouses. Written in Node & E
 - [x] REST API (items, locations, movements)  
 - [x] React UI (table + forms)  
 - [x] Dockerfile & Compose for local dev  
-- [ ] GitHub Actions → build & push image to ACR  
+- [x] GitHub Actions → build & push image to ACR  
 - [ ] Terraform module (AKS + Mongo DB flex server)  
 - [ ] GitOps (ArgoCD) rollout Dev → Prod  
 - [ ] Prometheus metrics + Grafana dashboard  
