@@ -1,0 +1,40 @@
+name: Build & Push API Image
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: |
+            {
+              "clientId": "${{ secrets.AZURE_CLIENT_ID }}",
+              "tenantId": "${{ secrets.AZURE_TENANT_ID }}",
+              "subscriptionId": "${{ secrets.AZURE_SUBSCRIPTION_ID }}",
+              "clientSecret": "${{ secrets.AZURE_CLIENT_SECRET }}"
+            }
+
+      - name: Login to ACR
+        run: az acr login --name ${{ secrets.ACR_NAME }}
+
+      - name: Build API Docker image
+        run: |
+          docker build \
+            -f inventory-api/Dockerfile \
+            -t ${{ secrets.ACR_NAME }}.azurecr.io/inventory-api:latest \
+            inventory-api
+
+      - name: Push API Docker image
+        run: |
+          docker push ${{ secrets.ACR_NAME }}.azurecr.io/inventory-api:latest
