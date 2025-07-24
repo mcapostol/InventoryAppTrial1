@@ -1,5 +1,7 @@
 name: "CodeQL Security Scan"
-
+permissions:
+  contents: read          # allow checking out your code
+  security-events: write  # *must* be write so CodeQL can upload alerts
 on:
   # Run on pushes to main and on PRs targeting main
   push:
