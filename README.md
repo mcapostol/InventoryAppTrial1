@@ -1,6 +1,3 @@
-
----
-
 ## 3️⃣ `InventoryAppTrial1` (+ Web‑UI)
 
 [![API Health](https://img.shields.io/badge/health-%7B%22status%22%3A%22ok%22%7D-brightgreen)](http://localhost:4000/health)  
@@ -41,22 +38,13 @@ npm ci               # backend
 npm run dev          # API on :4000
 cd web && npm ci && npm run dev   # UI on :5173
 ```
+
 ## Local Docker
 
-
-Pornire locală cu Docker Compose:
-
 ```bash
-
-
-Pornire locală cu Docker Compose:
-
-```bash
-
-
 docker compose up --build
+```bash
 
-```
 ## 🖼 Infrastructure Diagram
 
 ```mermaid
