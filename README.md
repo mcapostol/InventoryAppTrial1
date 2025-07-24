@@ -1,7 +1,7 @@
 ## 3️⃣ `InventoryAppTrial1` (+ Web‑UI)
 [![API Health](https://img.shields.io/badge/health-%7B%22status%22%3A%22ok%22%7D-brightgreen)](http://localhost:4000/health)  
 [![API Docker Build](https://github.com/mcapostol/InventoryAppTrial1/actions/workflows/build-api.yml/badge.svg)](https://github.com/mcapostol/InventoryAppTrial1/actions/workflows/build-api.yml)  
-[![UI Docker Build](https://img.shields.io/docker/build/library/inventory-ui?label=ui%20docker%20build)]  
+[![UI Docker Build](https://github.com/mcapostol/InventoryAppTrial1/actions/workflows/build-ui.yml/badge.svg)](https://github.com/mcapostol/InventoryAppTrial1/actions/workflows/build-ui.yml)  
 [![Docker Compose](https://img.shields.io/badge/docker--compose-up-blue)]  
 [![CodeQL](https://github.com/mcapostol/InventoryAppTrial1/actions/workflows/codeql.yml/badge.svg)](https://github.com/mcapostol/InventoryAppTrial1/actions/workflows/codeql.yml)  
 [![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=mcapostol/InventoryAppTrial1)](https://github.com/mcapostol/InventoryAppTrial1/security/dependabot)  
