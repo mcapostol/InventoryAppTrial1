@@ -11,6 +11,10 @@
 [![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=mcapostol/InventoryAppTrial1)](https://github.com/mcapostol/InventoryAppTrial1/security/dependabot) 
 
 ```markdown
+<<<<<<< HEAD
+=======
+
+>>>>>>> b57db3daa7b8f83e11ba5d387b3db97bc01b6ecd
 
 
 Internal tool for stock tracking across multiple warehouses. Written in Node & Express,  
@@ -43,12 +47,22 @@ cd web && npm ci && npm run dev   # UI on :5173
 ```
 ## Local Docker
 
+
 Pornire locală cu Docker Compose:
 
 ```bash
 
+<<<<<<< HEAD
+=======
+
+Pornire locală cu Docker Compose:
+
+```bash
+
+>>>>>>> b57db3daa7b8f83e11ba5d387b3db97bc01b6ecd
 docker compose up --build
 
+```
 ## 🖼 Infrastructure Diagram
 
 ```mermaid
