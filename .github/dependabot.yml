@@ -1,27 +1,20 @@
 version: 2
 updates:
-  # 1) npm dependencies in the root and inventory-api and web folders
-  - package-ecosystem: "npm"
-    directory: "/"                 # where package.json is
-    schedule:
-      interval: "daily"
+  # Actualizări pentru backend (inventory‑api)
   - package-ecosystem: "npm"
     directory: "/inventory-api"
     schedule:
       interval: "daily"
+    # opțional poți activa și pentru devDependencies:
+    # open-pull-requests-limit: 10
+    # allow:
+    #   - dependency-type: "all"
+
+  # Actualizări pentru frontend (web)
   - package-ecosystem: "npm"
     directory: "/web"
     schedule:
       interval: "daily"
-
-  # 2) GitHub Actions workflow updates
-  - package-ecosystem: "github-actions"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-
-  # 3) Docker base image updates
-  - package-ecosystem: "docker"
-    directory: "/"
-    schedule:
-      interval: "weekly"
+    # open-pull-requests-limit: 10
+    # allow:
+    #   - dependency-type: "all"
