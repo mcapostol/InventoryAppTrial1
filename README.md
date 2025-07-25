@@ -2,7 +2,7 @@
 [![API Health](https://img.shields.io/badge/health-%7B%22status%22%3A%22ok%22%7D-brightgreen)](http://localhost:4000/health)  
 [![API Docker Build](https://github.com/mcapostol/InventoryAppTrial1/actions/workflows/build-api.yml/badge.svg)](https://github.com/mcapostol/InventoryAppTrial1/actions/workflows/build-api.yml)  
 [![UI Docker Build](https://github.com/mcapostol/InventoryAppTrial1/actions/workflows/build-ui.yml/badge.svg)](https://github.com/mcapostol/InventoryAppTrial1/actions/workflows/build-ui.yml)  
-[![Docker Compose](https://img.shields.io/badge/docker--compose-up-blue)]  
+[![docker-compose](https://img.shields.io/badge/docker--compose-up-blue)]<!-- --> up 
 [![CodeQL](https://github.com/mcapostol/InventoryAppTrial1/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/mcapostol/InventoryAppTrial1/actions/workflows/codeql-analysis.yml) 
 
 Internal tool for stock tracking across multiple warehouses. Written in Node & Express, plus a lightweight React Admin UI. This repo will evolve into a fully containerised micro‑service deployed on **AKS**.  
