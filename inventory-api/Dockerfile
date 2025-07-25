@@ -9,7 +9,7 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 
 # 2. Instalăm strict pe lockfile
-RUN npm ci
+RUN npm install
 
 # 3. Copiem restul codului
 COPY . .
