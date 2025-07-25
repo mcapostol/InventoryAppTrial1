@@ -1,26 +1,32 @@
-# -------- build stage ----------
+# inventory-api/Dockerfile
+
+# Build stage
 FROM node:20-alpine AS build
+
 WORKDIR /app
 
-# copiem doar fișierele de dependențe mai întâi ⇒ cache mai bun
-COPY package*.json ./
-RUN npm ci          # instalează dependențele exact cum sunt în lockfile
+# 1. Copiem doar manifestele ca să avem cache bun
+COPY package.json package-lock.json ./
 
-# copiem restul codului
+# 2. Instalăm strict pe lockfile
+RUN npm ci
+
+# 3. Copiem restul codului
 COPY . .
 
-# dacă folosești TypeScript: RUN npm run build
-# dacă e JavaScript pur, sari direct la runtime stage
+# 4. Construim (dacă ai build script, altfel sari peste pasul ăsta)
+#    de exemplu: RUN npm run build
 
-# -------- runtime stage ----------
+# Runtime stage
 FROM node:20-alpine
+
 WORKDIR /app
-ENV NODE_ENV=production \
-    PORT=4000
 
-COPY --from=build /app /app
+# 5. Copiem artefactele din build (în cazul nostru tot codul + node_modules)
+COPY --from=build /app ./
 
-# elimină dependențele dev
-RUN npm ci --omit=dev
+# 6. Expunem portul
 EXPOSE 4000
-CMD ["npm", "start"]  
+
+# 7. Pornim serverul
+CMD ["node", "index.js"]
