@@ -5,6 +5,7 @@
 [![Build & Push UI Image](https://github.com/mcapostol/InventoryAppTrial1/actions/workflows/build-ui.yml/badge.svg)](https://github.com/mcapostol/InventoryAppTrial1/actions/workflows/build-ui.yml)
 [![docker-compose](https://img.shields.io/badge/docker--compose-up-blue)]<!-- --> 
 [![CodeQL](https://github.com/mcapostol/InventoryAppTrial1/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/mcapostol/InventoryAppTrial1/actions/workflows/codeql-analysis.yml) 
+[![Helm Lint](https://github.com/mcapostol/InventoryAppTrial1/actions/workflows/helm-lint.yml/badge.svg)](https://github.com/mcapostol/InventoryAppTrial1/actions/workflows/helm-lint.yml)
 
 Internal tool for stock tracking across multiple warehouses. Written in Node & Express, plus a lightweight React Admin UI. This repo will evolve into a fully containerised micro‑service deployed on **AKS**.  
 
