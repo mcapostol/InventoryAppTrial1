@@ -14,16 +14,24 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Set up QEMU (optional)
+        uses: docker/setup-qemu-action@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
       - name: Log in to GHCR
-        run: echo "${{ secrets.GHCR_PAT }}" \
-          | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+        run: |
+          echo "${{ secrets.GHCR_PAT }}" \
+            | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
 
       - name: Build UI image
         run: |
-          docker build -f web/Dockerfile \
-            -t ghcr.io/${{ github.repository_owner }}/inventory-app-ui:latest \
+          docker build \
+            --file web/Dockerfile \
+            --tag ghcr.io/${{ github.repository_owner }}/inventory-ui:latest \
             web
 
       - name: Push UI image
         run: |
-          docker push ghcr.io/${{ github.repository_owner }}/inventory-app-ui:latest
+          docker push ghcr.io/${{ github.repository_owner }}/inventory-ui:latest
