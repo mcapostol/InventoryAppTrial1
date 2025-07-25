@@ -2,7 +2,7 @@
 [![API Health](https://img.shields.io/badge/health-%7B%22status%22%3A%22ok%22%7D-brightgreen)](http://localhost:4000/health)  
 [![API Docker Build](https://github.com/mcapostol/InventoryAppTrial1/actions/workflows/build-api.yml/badge.svg)](https://github.com/mcapostol/InventoryAppTrial1/actions/workflows/build-api.yml)  
 [![UI Docker Build](https://github.com/mcapostol/InventoryAppTrial1/actions/workflows/build-ui.yml/badge.svg)](https://github.com/mcapostol/InventoryAppTrial1/actions/workflows/build-ui.yml)  
-[![Build & Push UI Image](https://github.com/${{ github.repository_owner }}/InventoryAppTrial1/actions/workflows/build-ui.yml/badge.svg)](https://github.com/${{ github.repository_owner }}/InventoryAppTrial1/actions/workflows/build-ui.yml)
+[![Build & Push UI Image](https://github.com/${{ github.repository_owner }}/InventoryAppTrial1/actions/workflows/build-ui.yml/badge.svg)](https://github.com/${{ github.repository_owner }}/InventoryAppTrial1/actions/workflows/build-ui.yml)]
 [![docker-compose](https://img.shields.io/badge/docker--compose-up-blue)]<!-- --> 
 [![CodeQL](https://github.com/mcapostol/InventoryAppTrial1/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/mcapostol/InventoryAppTrial1/actions/workflows/codeql-analysis.yml) 
 
