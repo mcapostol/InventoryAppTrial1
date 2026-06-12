@@ -7,10 +7,10 @@
     "test:int": "jest --config jest.config.js --runInBand --forceExit"
   },
   "dependencies": {
-    "express": "^5.1.0",
-    "node-fetch": "2.6.7"
+    "express": "^5.2.1",
+    "node-fetch": "3.3.2"
   },
   "devDependencies": {
-    "jest": "^30.0.5"
+    "jest": "^30.2.0"
   }
 }
